@@ -7,7 +7,6 @@ import org.springframework.stereotype.Repository;
 import com.ssvs.SSVS.backend.model.HistoriaClinicaCompletaDTO;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Repository
@@ -49,6 +48,7 @@ public class HistoriaClinicaRepository {
         String sql = "UPDATE Historias_Clinicas SET paciente_id = ?, fecha_creacion = ? WHERE historia_id = ?";
         jdbcTemplate.update(sql, historiaClinica.getPacienteId(), historiaClinica.getFechaCreacion(), id);
     }
+    @SuppressWarnings("deprecation")
     public List<HistoriaClinicaCompletaDTO> findHistoriaClinicaResumenByPacienteId(int pacienteId) {
         String sql = "SELECT " +
                      "p.paciente_id, " +
