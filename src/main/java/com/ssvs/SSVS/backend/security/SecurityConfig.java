@@ -45,11 +45,25 @@ public class SecurityConfig {
     public CorsFilter corsFilter() {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         CorsConfiguration config = new CorsConfiguration();
+        
+        // Permitir credenciales (como cookies, authorization headers, etc.)
         config.setAllowCredentials(true);
-        config.setAllowedOrigins(Arrays.asList("https://ssvsfrontend-production.up.railway.app"));
+        
+        // Especificar los orígenes permitidos
+        config.setAllowedOrigins(Arrays.asList(
+            "https://ssvsfrontend-production.up.railway.app",
+            "http://localhost:4200"
+        ));
+        
+        // Especificar los métodos HTTP permitidos
         config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        
+        // Especificar los encabezados permitidos
         config.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type"));
+        
+        // Registrar la configuración para todas las rutas
         source.registerCorsConfiguration("/**", config);
+        
         return new CorsFilter(source);
     }
 }
