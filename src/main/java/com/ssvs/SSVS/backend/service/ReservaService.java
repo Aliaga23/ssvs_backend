@@ -36,6 +36,9 @@ public class ReservaService {
 public List<ReservaInfoDTO> getReservasByMedicoId(int medicoId) {
     return reservaRepository.findReservasByMedicoId(medicoId);
 }
+public List<ReservaInfoDTO> getReservasByPacienteId(int pacienteId) {
+    return reservaRepository.findReservasByPacienteId(pacienteId);
+}
 
     public void deleteReserva(int reservaId) {
         reservaRepository.deleteReserva(reservaId);

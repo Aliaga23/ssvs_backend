@@ -58,7 +58,11 @@ public ResponseEntity<List<ReservaInfoDTO>> getReservasByMedicoId(@PathVariable 
     List<ReservaInfoDTO> reservas = reservaService.getReservasByMedicoId(medicoId);
     return reservas != null && !reservas.isEmpty() ? ResponseEntity.ok(reservas) : ResponseEntity.status(HttpStatus.NOT_FOUND).build();
 }
-
+@GetMapping("/paciente/{pacienteId}")
+public ResponseEntity<List<ReservaInfoDTO>> getReservasByPacienteId(@PathVariable int pacienteId) {
+    List<ReservaInfoDTO> reservas = reservaService.getReservasByPacienteId(pacienteId);
+    return reservas != null && !reservas.isEmpty() ? ResponseEntity.ok(reservas) : ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+}
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteReserva(@PathVariable int id) {
         reservaService.deleteReserva(id);
