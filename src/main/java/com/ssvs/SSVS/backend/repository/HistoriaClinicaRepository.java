@@ -7,6 +7,7 @@ import org.springframework.stereotype.Repository;
 import com.ssvs.SSVS.backend.model.HistoriaClinicaCompletaDTO;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Repository
@@ -48,7 +49,6 @@ public class HistoriaClinicaRepository {
         String sql = "UPDATE Historias_Clinicas SET paciente_id = ?, fecha_creacion = ? WHERE historia_id = ?";
         jdbcTemplate.update(sql, historiaClinica.getPacienteId(), historiaClinica.getFechaCreacion(), id);
     }
-    @SuppressWarnings("deprecation")
     public List<HistoriaClinicaCompletaDTO> findHistoriaClinicaResumenByPacienteId(int pacienteId) {
         String sql = "SELECT " +
                      "p.paciente_id, " +
@@ -83,26 +83,35 @@ public class HistoriaClinicaRepository {
                      "WHERE p.paciente_id = ? " +
                      "ORDER BY cm.fecha_consulta DESC";
 
-        return jdbcTemplate.query(sql, new Object[]{pacienteId}, new RowMapper<HistoriaClinicaCompletaDTO>() {
-            @Override
-            public HistoriaClinicaCompletaDTO mapRow(ResultSet rs, int rowNum) throws SQLException {
-                HistoriaClinicaCompletaDTO dto = new HistoriaClinicaCompletaDTO();
-                dto.setPacienteId(rs.getInt("paciente_id"));
-                dto.setNombrePaciente(rs.getString("nombre_paciente"));
-                dto.setApellidoPaciente(rs.getString("apellido_paciente"));
-                dto.setHistoriaId(rs.getInt("historia_id"));
-                dto.setFechaCreacionHistoria(rs.getTimestamp("fecha_creacion_historia").toLocalDateTime());
-                dto.setConsultaId(rs.getInt("consulta_id"));
-                dto.setFechaConsulta(rs.getTimestamp("fecha_consulta").toLocalDateTime());
-                dto.setDiagnostico(rs.getString("diagnostico"));
-                dto.setTratamiento(rs.getString("tratamiento"));
-                dto.setNotasConsulta(rs.getString("notas_consulta"));
-                dto.setMedicamentosReceta(rs.getString("medicamentos_receta"));
-                dto.setLaboratorios(rs.getString("laboratorios"));
-                return dto;
-            }
-        });
-    }
+                     return jdbcTemplate.query(sql, new Object[]{pacienteId}, new RowMapper<HistoriaClinicaCompletaDTO>() {
+                        @Override
+                        public HistoriaClinicaCompletaDTO mapRow(ResultSet rs, int rowNum) throws SQLException {
+                            HistoriaClinicaCompletaDTO dto = new HistoriaClinicaCompletaDTO();
+                            dto.setPacienteId(rs.getInt("paciente_id"));
+                            dto.setNombrePaciente(rs.getString("nombre_paciente"));
+                            dto.setApellidoPaciente(rs.getString("apellido_paciente"));
+                            dto.setHistoriaId(rs.getInt("historia_id"));
+                            
+                            // Maneja posibles valores nulos en `fecha_creacion_historia`
+                            dto.setFechaCreacionHistoria(rs.getTimestamp("fecha_creacion_historia") != null ? 
+                                rs.getTimestamp("fecha_creacion_historia").toLocalDateTime() : null);
+                            
+                            dto.setConsultaId(rs.getInt("consulta_id"));
+                            
+                            // Maneja posibles valores nulos en `fecha_consulta`
+                            dto.setFechaConsulta(rs.getTimestamp("fecha_consulta") != null ? 
+                                rs.getTimestamp("fecha_consulta").toLocalDateTime() : null);
+                            
+                            dto.setDiagnostico(rs.getString("diagnostico"));
+                            dto.setTratamiento(rs.getString("tratamiento"));
+                            dto.setNotasConsulta(rs.getString("notas_consulta"));
+                            dto.setMedicamentosReceta(rs.getString("medicamentos_receta"));
+                            dto.setLaboratorios(rs.getString("laboratorios"));
+                            
+                            return dto;
+                        }
+                    });
+                }                    
     public void delete(int id) {
         String sql = "DELETE FROM Historias_Clinicas WHERE historia_id = ?";
         jdbcTemplate.update(sql, id);
