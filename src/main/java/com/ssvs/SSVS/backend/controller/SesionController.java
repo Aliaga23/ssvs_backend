@@ -44,18 +44,5 @@ public class SesionController {
                     .body("Error al configurar la sesión: " + e.getMessage());
         }
     }
-    /**
-     * Verificar los valores de sesión configurados
-     * @return Valores de sesión o mensaje de error
-     */
-    @GetMapping("/check")
-    public ResponseEntity<String> verificarSesion() {
-        try {
-            String resultado = sesionService.obtenerSesion();
-            return ResponseEntity.ok(resultado);
-        } catch (Exception e) {
-            return ResponseEntity.status(500)
-                    .body("Error al verificar la sesión: " + e.getMessage());
-        }
-    }
+   
 }

@@ -3,9 +3,13 @@ package com.ssvs.SSVS.backend.controller;
 import com.ssvs.SSVS.backend.model.User;
 import com.ssvs.SSVS.backend.service.UserService;
 import com.ssvs.SSVS.backend.security.JwtUtil;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import com.ssvs.SSVS.backend.service.SesionService;
+import com.ssvs.SSVS.backend.service.IPService;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -15,7 +19,11 @@ public class AuthController {
 
     private final UserService userService;
     private final JwtUtil jwtUtil;
+ @Autowired
+    private SesionService sesionService;
 
+    @Autowired
+    private IPService ipService;
     public AuthController(UserService userService, JwtUtil jwtUtil) {
         this.userService = userService;
         this.jwtUtil = jwtUtil;
@@ -56,31 +64,35 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody User user) {
         User userDb = userService.findByEmail(user.getEmail());
-
+    
         if (userDb != null && userService.verifyPassword(user.getPassword(), userDb.getPassword())) {
+            // Configurar la sesión con usuarioId e IP
+            String ip = ipService.obtenerIPPublica();
+            sesionService.establecerSesion(userDb.getId(), ip);
+    
             Map<String, Object> claims = new HashMap<>();
             claims.put("id", userDb.getId());
             claims.put("nombre", userDb.getNombre());
             claims.put("email", userDb.getEmail());
             claims.put("rolId", userDb.getRolId());
-
-            // Check for patient or doctor role and add their specific IDs
-            if (userDb.getRolId() == 2) { // Assume role ID 3 is for 'Paciente'
+    
+            if (userDb.getRolId() == 2) {
                 Integer pacienteId = userService.getPacienteIdByUserId(userDb.getId());
                 claims.put("pacienteId", pacienteId);
-            } else if (userDb.getRolId() == 3) { // Assume role ID 4 is for 'Medico'
+            } else if (userDb.getRolId() == 3) {
                 Integer medicoId = userService.getMedicoIdByUserId(userDb.getId());
                 claims.put("medicoId", medicoId);
             }
-
+    
             String token = jwtUtil.generateTokenWithClaims(user.getEmail(), claims);
-
+    
             return ResponseEntity.ok(Map.of(
                 "token", token,
                 "user", claims
             ));
         }
-
+    
         return ResponseEntity.status(401).body("Invalid credentials.");
     }
+    
 }

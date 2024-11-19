@@ -11,34 +11,19 @@ public class SesionService {
     private JdbcTemplate jdbcTemplate;
 
     public void establecerSesion(int usuarioId, String ip) {
-        try {
-            // Establecer la variable de sesión para usuario.id
-            String sqlUsuario = "SET SESSION \"usuario.id\" = " + usuarioId;
-            jdbcTemplate.execute(sqlUsuario);
+        String sqlUsuario = "SET SESSION \"usuario.id\" = " + usuarioId;
+        jdbcTemplate.execute(sqlUsuario);
 
-            // Establecer la variable de sesión para usuario.ip
-            String sqlIp = "SET SESSION \"usuario.ip\" = '" + ip + "'";
-            jdbcTemplate.execute(sqlIp);
-
-            System.out.println("Sesión configurada: usuario.id = " + usuarioId + ", usuario.ip = " + ip);
-        } catch (Exception e) {
-            System.err.println("Error configurando las variables de sesión: " + e.getMessage());
-            throw e;
-        }
+        String sqlIp = "SET SESSION \"usuario.ip\" = '" + ip + "'";
+        jdbcTemplate.execute(sqlIp);
     }
 
-    public String obtenerSesion() {
+    public int obtenerUsuarioIdSesion() {
         try {
-            // Consultar las variables de sesión configuradas
-            String sqlUsuario = "SHOW \"usuario.id\"";
-            String sqlIp = "SHOW \"usuario.ip\"";
-
-            String usuarioId = jdbcTemplate.queryForObject(sqlUsuario, String.class);
-            String ip = jdbcTemplate.queryForObject(sqlIp, String.class);
-
-            return "Usuario ID: " + usuarioId + ", IP: " + ip;
+            String sql = "SHOW \"usuario.id\"";
+            return Integer.parseInt(jdbcTemplate.queryForObject(sql, String.class));
         } catch (Exception e) {
-            return "Error obteniendo las variables de sesión: " + e.getMessage();
+            throw new RuntimeException("No se pudo obtener el usuarioId de la sesión: " + e.getMessage());
         }
     }
 }

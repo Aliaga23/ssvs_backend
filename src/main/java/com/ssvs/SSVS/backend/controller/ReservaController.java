@@ -2,12 +2,14 @@ package com.ssvs.SSVS.backend.controller;
 
 import com.ssvs.SSVS.backend.dto.ReservaInfoDTO;
 import com.ssvs.SSVS.backend.service.ReservaService;
-import com.ssvs.SSVS.backend.service.SesionService;
-import com.ssvs.SSVS.backend.service.IPService;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import com.ssvs.SSVS.backend.service.SesionService;
+import com.ssvs.SSVS.backend.service.IPService;
+import com.ssvs.SSVS.backend.service.UserService;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -37,15 +39,9 @@ public class ReservaController {
     @PostMapping
     public ResponseEntity<Void> createReserva(@RequestBody ReservaInfoDTO reservaInfo) {
         try {
-            // Obtener la IP pública del cliente
-            String ip = ipService.obtenerIPPublica();
-
-            // Simular el ID del usuario autenticado
-            int usuarioId = 1; // Cambiar esto según la lógica de autenticación actual
-
-            // Registrar la sesión en PostgreSQL
-            sesionService.establecerSesion(usuarioId, ip);
-
+            // Obtener el usuarioId desde la sesión
+            int usuarioId = sesionService.obtenerUsuarioIdSesion();
+    
             // Crear la reserva
             reservaService.saveReserva(
                 reservaInfo.getPacienteId(),
@@ -53,13 +49,15 @@ public class ReservaController {
                 reservaInfo.getFechaReserva(),
                 reservaInfo.getEstado()
             );
+    
+            System.out.println("Reserva creada por usuarioId: " + usuarioId);
             return ResponseEntity.ok().build();
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .build();
+                    .body(null);
         }
     }
-
+    
     @GetMapping("/{id}")
     public ResponseEntity<ReservaInfoDTO> getReservaById(@PathVariable int id) {
         ReservaInfoDTO reserva = reservaService.getReservaById(id);
