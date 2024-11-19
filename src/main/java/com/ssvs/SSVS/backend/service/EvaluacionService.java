@@ -27,4 +27,8 @@ public class EvaluacionService {
         Double promedio = evaluacionRepository.obtenerPromedioEvaluacion(medicoId, especialidadId);
         return promedio != null ? promedio : 0.0;
     }
+    public List<EvaluacionDTO> obtenerTodasLasEvaluaciones() {
+        return evaluacionRepository.obtenerTodasLasEvaluaciones();
+    }
+    
 }

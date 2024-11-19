@@ -36,4 +36,11 @@ public class EvaluacionController {
         Double promedio = evaluacionService.obtenerPromedioEvaluacion(medicoId, especialidadId);
         return ResponseEntity.ok(promedio);
     }
+
+    // Nuevo endpoint para obtener todas las evaluaciones
+    @GetMapping
+    public ResponseEntity<List<EvaluacionDTO>> obtenerTodasLasEvaluaciones() {
+        List<EvaluacionDTO> evaluaciones = evaluacionService.obtenerTodasLasEvaluaciones();
+        return ResponseEntity.ok(evaluaciones);
+    }
 }
