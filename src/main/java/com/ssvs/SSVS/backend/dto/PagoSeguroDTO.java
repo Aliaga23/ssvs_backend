@@ -8,7 +8,8 @@ public class PagoSeguroDTO {
     private double monto;
     private LocalDate fechaPago;
     private LocalDate fechaVencimiento;
-    private String metodoPago;
+    private int metodoId; // Nuevo campo para metodoId
+    private String metodoPago; // Mantener metodoPago como nombre descriptivo
     private String estado;
 
     // Getters y Setters
@@ -50,6 +51,14 @@ public class PagoSeguroDTO {
 
     public void setFechaVencimiento(LocalDate fechaVencimiento) {
         this.fechaVencimiento = fechaVencimiento;
+    }
+
+    public int getMetodoId() {
+        return metodoId;
+    }
+
+    public void setMetodoId(int metodoId) {
+        this.metodoId = metodoId;
     }
 
     public String getMetodoPago() {

@@ -18,30 +18,26 @@ public class PagoSeguroService {
         this.pacienteService = pacienteService;
     }
 
-    // Validar y actualizar el estado del seguro de un paciente
+    public void registrarPagoSeguro(int pacienteId, double monto, LocalDate fechaPago, int metodoId, String estado) {
+        pagoSeguroRepository.registrarPagoSeguro(pacienteId, monto, fechaPago, metodoId, estado);
+        actualizarEstadoSeguro(pacienteId);
+    }
+
+    public List<PagoSeguroDTO> obtenerHistorialDePagos(int pacienteId) {
+        return pagoSeguroRepository.getHistorialDePagos(pacienteId);
+    }
+
     public void actualizarEstadoSeguro(int pacienteId) {
         LocalDate fechaVencimiento = pagoSeguroRepository.obtenerFechaVencimiento(pacienteId);
-
         if (fechaVencimiento != null && fechaVencimiento.isAfter(LocalDate.now())) {
             pacienteService.actualizarEstadoSeguro(pacienteId, true, fechaVencimiento);
         } else {
             pacienteService.actualizarEstadoSeguro(pacienteId, false, null);
         }
     }
-
-    // Registrar un nuevo pago de seguro
-    public void registrarPagoSeguro(int pacienteId, double monto, LocalDate fechaVencimiento, String metodoPago) {
-        pagoSeguroRepository.registrarPagoSeguro(pacienteId, monto, fechaVencimiento, metodoPago);
-        actualizarEstadoSeguro(pacienteId);
-    }
-
-    // Validar si el seguro está activo
-    public boolean validarEstadoSeguro(int pacienteId) {
-        LocalDate fechaVencimiento = pagoSeguroRepository.obtenerFechaVencimiento(pacienteId);
-        return fechaVencimiento != null && fechaVencimiento.isAfter(LocalDate.now());
-    }
-
-    public List<PagoSeguroDTO> obtenerHistorialDePagos(int pacienteId) {
-        return pagoSeguroRepository.getHistorialDePagos(pacienteId);
-    }
+        // Validar si el seguro está activo
+        public boolean validarEstadoSeguro(int pacienteId) {
+            LocalDate fechaVencimiento = pagoSeguroRepository.obtenerFechaVencimiento(pacienteId);
+            return fechaVencimiento != null && fechaVencimiento.isAfter(LocalDate.now());
+        }
 }

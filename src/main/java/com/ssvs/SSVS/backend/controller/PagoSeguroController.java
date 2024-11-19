@@ -18,27 +18,27 @@ public class PagoSeguroController {
         this.pagoSeguroService = pagoSeguroService;
     }
 
-    // Registrar un nuevo pago
     @PostMapping("/registrar")
     public ResponseEntity<Void> registrarPagoSeguro(@RequestBody PagoSeguroDTO pagoSeguroDTO) {
         pagoSeguroService.registrarPagoSeguro(
                 pagoSeguroDTO.getPacienteId(),
                 pagoSeguroDTO.getMonto(),
-                pagoSeguroDTO.getFechaVencimiento(),
-                pagoSeguroDTO.getMetodoPago()
+                pagoSeguroDTO.getFechaPago(),
+                pagoSeguroDTO.getMetodoId(),
+                pagoSeguroDTO.getEstado()
         );
         return ResponseEntity.ok().build();
     }
 
-    // Obtener el estado del seguro
+    @GetMapping("/historial/{pacienteId}")
+    public ResponseEntity<List<PagoSeguroDTO>> obtenerHistorialDePagos(@PathVariable int pacienteId) {
+        List<PagoSeguroDTO> historial = pagoSeguroService.obtenerHistorialDePagos(pacienteId);
+        return ResponseEntity.ok(historial);
+    }
+
     @GetMapping("/estado/{pacienteId}")
     public ResponseEntity<Boolean> obtenerEstadoSeguro(@PathVariable int pacienteId) {
         boolean seguroActivo = pagoSeguroService.validarEstadoSeguro(pacienteId);
         return ResponseEntity.ok(seguroActivo);
-    }
-       @GetMapping("/historial/{pacienteId}")
-    public ResponseEntity<List<PagoSeguroDTO>> obtenerHistorialDePagos(@PathVariable int pacienteId) {
-        List<PagoSeguroDTO> historial = pagoSeguroService.obtenerHistorialDePagos(pacienteId);
-        return ResponseEntity.ok(historial);
     }
 }
