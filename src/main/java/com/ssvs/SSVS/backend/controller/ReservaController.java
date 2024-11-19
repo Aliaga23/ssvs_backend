@@ -4,7 +4,9 @@ package com.ssvs.SSVS.backend.controller;
 
 import com.ssvs.SSVS.backend.dto.ReservaInfoDTO;
 import com.ssvs.SSVS.backend.service.ReservaService;
-
+import com.ssvs.SSVS.backend.service.IPService;
+import com.ssvs.SSVS.backend.service.SesionService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,9 +19,19 @@ import java.util.List;
 public class ReservaController {
     private final ReservaService reservaService;
 
+      @Autowired
+    private SesionService sesionService;
+
+    @Autowired
+    private IPService ipService;
+
     public ReservaController(ReservaService reservaService) {
         this.reservaService = reservaService;
     }
+
+
+
+
 
     @GetMapping
     public ResponseEntity<List<ReservaInfoDTO>> getAllReservas() {
@@ -28,6 +40,14 @@ public class ReservaController {
     }
 @PostMapping
 public ResponseEntity<Void> createReserva(@RequestBody ReservaInfoDTO reservaInfo) {
+    // Obtener la IP pública del cliente
+    String ip = ipService.obtenerIPPublica();
+    int usuarioId = 1; // Este sería el ID del usuario autenticado
+
+    // Registrar la sesión en PostgreSQL
+    sesionService.establecerSesion(usuarioId, ip);
+
+    // Lógica para crear la reserva
     reservaService.saveReserva(
         reservaInfo.getPacienteId(),
         reservaInfo.getCupoId(),
@@ -35,6 +55,7 @@ public ResponseEntity<Void> createReserva(@RequestBody ReservaInfoDTO reservaInf
         reservaInfo.getEstado()
     );
     return ResponseEntity.ok().build();
+    
 }
 @GetMapping("/{id}")
 public ResponseEntity<ReservaInfoDTO> getReservaById(@PathVariable int id) {
