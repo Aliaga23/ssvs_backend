@@ -5,10 +5,6 @@ package com.ssvs.SSVS.backend.controller;
 import com.ssvs.SSVS.backend.dto.ReservaInfoDTO;
 import com.ssvs.SSVS.backend.service.ReservaService;
 
-import com.ssvs.SSVS.backend.service.IPService;
-import com.ssvs.SSVS.backend.service.SesionService;
-
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,16 +16,11 @@ import java.util.List;
 @RequestMapping("/api/reservas")
 public class ReservaController {
     private final ReservaService reservaService;
- private final SesionService sesionService;
-    private final IPService ipService;
 
-    @Autowired
-    public ReservaController(ReservaService reservaService, SesionService sesionService, IPService ipService) {
+    public ReservaController(ReservaService reservaService) {
         this.reservaService = reservaService;
-        this.sesionService = sesionService;
-        this.ipService = ipService;
     }
-  
+
     @GetMapping
     public ResponseEntity<List<ReservaInfoDTO>> getAllReservas() {
         List<ReservaInfoDTO> reservas = reservaService.getAllReservasWithDetails();
@@ -37,12 +28,6 @@ public class ReservaController {
     }
 @PostMapping
 public ResponseEntity<Void> createReserva(@RequestBody ReservaInfoDTO reservaInfo) {
-
-    String ip = ipService.obtenerIPPublica();
-    sesionService.establecerSesion(1, ip); // Cambiar '1' por el ID del usuario autenticado.
-
-    // Guardar la reserva
-
     reservaService.saveReserva(
         reservaInfo.getPacienteId(),
         reservaInfo.getCupoId(),
