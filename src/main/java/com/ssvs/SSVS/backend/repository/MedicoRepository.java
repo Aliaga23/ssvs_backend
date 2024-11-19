@@ -31,9 +31,24 @@ public class MedicoRepository {
     };
 
     public List<Medico> findAll() {
-        String sql = "SELECT * FROM Medicos";
-        return jdbcTemplate.query(sql, rowMapper);
+        String sql = """
+            SELECT m.medico_id, m.usuario_id, m.genero, m.fecha_nacimiento, 
+                   u.nombre AS nombre, u.apellido AS apellido
+            FROM Medicos m
+            JOIN Usuarios u ON m.usuario_id = u.usuario_id
+        """;
+        return jdbcTemplate.query(sql, (rs, rowNum) -> {
+            Medico medico = new Medico();
+            medico.setId(rs.getInt("medico_id"));
+            medico.setUsuarioId(rs.getInt("usuario_id"));
+            medico.setGenero(rs.getString("genero"));
+            medico.setFechaNacimiento(rs.getDate("fecha_nacimiento").toLocalDate());
+            medico.setNombre(rs.getString("nombre"));
+            medico.setApellido(rs.getString("apellido"));
+            return medico;
+        });
     }
+    
 
     public Medico findById(int id) {
         String sql = "SELECT * FROM Medicos WHERE medico_id = ?";

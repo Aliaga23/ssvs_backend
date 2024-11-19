@@ -6,6 +6,10 @@ public class ConsultaMedicaDTO {
     private int consultaId;
     private int reservaId;
     private int historiaId;
+    private int pacienteId; // Nuevo campo
+    private int medicoId; // Nuevo campo
+    private int cupoId; // Nuevo campo
+    private int especialidadId; // Nuevo campo
     private LocalDateTime fechaConsulta;
     private String diagnostico;
     private String tratamiento;
@@ -38,6 +42,38 @@ public class ConsultaMedicaDTO {
 
     public void setHistoriaId(int historiaId) {
         this.historiaId = historiaId;
+    }
+
+    public int getPacienteId() {
+        return pacienteId;
+    }
+
+    public void setPacienteId(int pacienteId) {
+        this.pacienteId = pacienteId;
+    }
+
+    public int getMedicoId() {
+        return medicoId;
+    }
+
+    public void setMedicoId(int medicoId) {
+        this.medicoId = medicoId;
+    }
+
+    public int getCupoId() {
+        return cupoId;
+    }
+
+    public void setCupoId(int cupoId) {
+        this.cupoId = cupoId;
+    }
+
+    public int getEspecialidadId() {
+        return especialidadId;
+    }
+
+    public void setEspecialidadId(int especialidadId) {
+        this.especialidadId = especialidadId;
     }
 
     public LocalDateTime getFechaConsulta() {
