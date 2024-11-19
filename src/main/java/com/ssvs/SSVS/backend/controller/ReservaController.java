@@ -8,9 +8,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import com.ssvs.SSVS.backend.service.SesionService;
-import com.ssvs.SSVS.backend.service.IPService;
-import com.ssvs.SSVS.backend.service.UserService;
-
 import java.time.LocalDate;
 import java.util.List;
 
@@ -23,8 +20,6 @@ public class ReservaController {
     @Autowired
     private SesionService sesionService;
 
-    @Autowired
-    private IPService ipService;
 
     public ReservaController(ReservaService reservaService) {
         this.reservaService = reservaService;
@@ -90,6 +85,9 @@ public class ReservaController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteReserva(@PathVariable int id) {
+        int usuarioId = sesionService.obtenerUsuarioIdSesion();
+        System.out.println("Reserva creada por usuarioId: " + usuarioId);
+
         reservaService.deleteReserva(id);
         return ResponseEntity.noContent().build();
     }

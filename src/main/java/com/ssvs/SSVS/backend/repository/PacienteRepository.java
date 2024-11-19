@@ -7,6 +7,7 @@ import org.springframework.stereotype.Repository;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.List;
 
 @Repository
@@ -55,4 +56,10 @@ public class PacienteRepository {
         String sql = "DELETE FROM Pacientes WHERE paciente_id = ?";
         jdbcTemplate.update(sql, id);
     }
+     // Actualizar el estado del seguro de un paciente
+    public void actualizarEstadoSeguro(int pacienteId, boolean seguroActivo, LocalDate fechaVencimiento) {
+        String sql = "UPDATE Pacientes SET seguro_activo = ?, fecha_vencimiento_seguro = ? WHERE paciente_id = ?";
+        jdbcTemplate.update(sql, seguroActivo, fechaVencimiento, pacienteId);
+    }
+
 }

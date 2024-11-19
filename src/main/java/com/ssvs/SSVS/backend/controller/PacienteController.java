@@ -5,6 +5,7 @@ import com.ssvs.SSVS.backend.service.PacienteService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -45,5 +46,14 @@ public class PacienteController {
     @DeleteMapping("/{id}")
     public void deletePaciente(@PathVariable int id) {
         pacienteService.deletePaciente(id);
+    }
+     // Endpoint para actualizar el estado del seguro del paciente
+    @PutMapping("/{pacienteId}/estado-seguro")
+    public ResponseEntity<Void> actualizarEstadoSeguro(
+            @PathVariable int pacienteId,
+            @RequestParam boolean seguroActivo,
+            @RequestParam(required = false) LocalDate fechaVencimiento) {
+        pacienteService.actualizarEstadoSeguro(pacienteId, seguroActivo, fechaVencimiento);
+        return ResponseEntity.ok().build();
     }
 }

@@ -2,8 +2,11 @@ package com.ssvs.SSVS.backend.controller;
 
 import com.ssvs.SSVS.backend.model.User;
 import com.ssvs.SSVS.backend.service.UserService;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import com.ssvs.SSVS.backend.service.SesionService;
 
 import java.util.List;
 
@@ -16,6 +19,10 @@ public class UserController {
     public UserController(UserService userService) {
         this.userService = userService;
     }
+
+    
+    @Autowired
+    private SesionService sesionService;
 
     // Obtener todos los usuarios
     @GetMapping
@@ -37,19 +44,31 @@ public class UserController {
     // Crear un nuevo usuario
     @PostMapping
     public void createUser(@RequestBody User user) {
+        int usuarioId = sesionService.obtenerUsuarioIdSesion();
+
         userService.createUser(user);
+        System.out.println("Reserva creada por usuarioId: " + usuarioId);
+
     }
 
     // Actualizar un usuario
     @PutMapping("/{id}")
     public void updateUser(@PathVariable int id, @RequestBody User user) {
+        int usuarioId = sesionService.obtenerUsuarioIdSesion();
+
         userService.updateUser(id, user);
+        System.out.println("Reserva creada por usuarioId: " + usuarioId);
+        
     }
 
     // Eliminar un usuario
     @DeleteMapping("/{id}")
     public void deleteUser(@PathVariable int id) {
+        int usuarioId = sesionService.obtenerUsuarioIdSesion();
+
         userService.deleteUser(id);
+        System.out.println("Reserva creada por usuarioId: " + usuarioId);
+
     }
 
     // Cambiar contraseña de usuario
