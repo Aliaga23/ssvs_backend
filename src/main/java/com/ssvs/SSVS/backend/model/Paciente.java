@@ -1,4 +1,5 @@
 package com.ssvs.SSVS.backend.model;
+
 import java.time.LocalDate;
 
 public class Paciente {
@@ -7,7 +8,9 @@ public class Paciente {
     private int usuarioId;
     private LocalDate fechaNacimiento;
     private String genero;
-    private String tipoSangre;  // Nueva propiedad para el tipo de sangre
+    private String tipoSangre;  
+    private String nombre;       // Nuevo campo
+    private String apellido;     // Nuevo campo
 
     // Getters y Setters
     public int getId() {
@@ -48,5 +51,21 @@ public class Paciente {
 
     public void setTipoSangre(String tipoSangre) {
         this.tipoSangre = tipoSangre;
+    }
+
+    public String getNombre() {
+        return nombre;
+    }
+
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
+
+    public String getApellido() {
+        return apellido;
+    }
+
+    public void setApellido(String apellido) {
+        this.apellido = apellido;
     }
 }
